@@ -1,0 +1,23 @@
+[req]
+default_bits       = 4096
+prompt             = no
+default_md         = sha256
+req_extensions     = req_ext
+distinguished_name = dn
+
+[dn]
+C  = MX
+ST = Mexico
+L  = Toluca
+O  = ZEPGA
+OU = IT
+CN = 192.168.0.120
+
+[req_ext]
+subjectAltName = @alt_names
+basicConstraints = critical, CA:TRUE
+keyUsage = critical, digitalSignature, keyCertSign
+
+[alt_names]
+DNS.1 = api.zepga.local
+IP.1  = 192.168.0.120

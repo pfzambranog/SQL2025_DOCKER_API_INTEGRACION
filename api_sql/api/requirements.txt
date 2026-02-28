@@ -1,0 +1,5 @@
+fastapi==0.110.0
+uvicorn[standard]==0.27.1
+pyodbc==5.1.0
+python-dotenv==1.0.1
+python-multipart==0.0.9

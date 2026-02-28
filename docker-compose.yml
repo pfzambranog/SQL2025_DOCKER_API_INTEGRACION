@@ -1,0 +1,43 @@
+# version: "3.9"
+
+services:
+
+  sqlserver:
+    build: . # <--- Construir la imagen de SQL Server con nuestro Dockerfile personalizado
+    container_name: SQL-Docker
+  
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "Yape2025!"
+      MSSQL_PID: "Developer"
+      MSSQL_COLLATION: "SQL_Latin1_General_CP1_CI_AI"
+      TZ: "America/Monterrey"
+      # Quitamos las variables de MSSQL_ENABLE_MLSERVICES, MSSQL_EXTERNAL_LANGUAGES, etc.
+      # porque las instalaremos directamente en la imagen y habilitaremos con T-SQL.
+      # MSSQL_MLSERVICES_ACCEPT_EULA ya vimos que no funciona por variable de entorno
+    
+    volumes:
+      - C:\BaseDatos\Docker\SQL-Docker-2025\data:/var/opt/mssql/data
+      - C:\BaseDatos\Docker\SQL-Docker-2025\log:/var/opt/mssql/log
+      - C:\BaseDatos\Docker\SQL-Docker-2025\secrets:/var/opt/mssql/secrets
+      # Montamos el init.sql para que ejecute la aceptación del EULA y habilitación de scripts
+      - C:\BaseDatos\Docker\SQL-Docker-2025\init.sql:/docker-entrypoint-initdb.d/init.sql 
+      
+    ports:
+      - "15000:1433"
+    
+    restart: unless-stopped
+    
+    networks:
+      - app_net
+    
+    healthcheck:
+      test: ["CMD-SHELL", "pidof sqlservr"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+networks:
+  app_net:
+    name: app_net
+    driver: bridge
